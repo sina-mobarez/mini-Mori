@@ -81,7 +81,21 @@ npm run build
 for this purpose we use meilisearch
 for run it by docker use this command:
 
+docker pull getmeili/meilisearch
+
+docker run -d --rm \
+    --name meili-search \
+    -p 7700:7700 \
+    -e MEILI_ENV='development' \
+    -v $(pwd)/meili_data:/meili_data \
+    getmeili/meilisearch
 
 for load json (products.json) use this command:
 
 python scripts/load_products_to_meilisearch.py path_to_your/products.json
+
+
+if you have import error for run scripts use this way:
+export PYTHONPATH=$(pwd) (where products.json exist)
+
+and then run scripts

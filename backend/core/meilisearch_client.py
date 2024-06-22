@@ -1,11 +1,25 @@
 import meilisearch
 from core.config import settings
 
-# Initialize Meilisearch client
-client = meilisearch.Client(f'http://{settings.meilisearch_host}:{settings.meilisearch_port}')
+class MeiliSearchClient:
+    """
+    MeiliSearch client wrapper for initializing and ensuring the products index exists.
 
-# Ensure the products index exists
-def create_index():
-    client.create_index(uid='products', options={'primaryKey': 'id'})
+    Attributes:
+        client (meilisearch.Client): The MeiliSearch client instance.
+    """
+    def __init__(self):
+        self.client = meilisearch.Client(f'http://{settings.meilisearch_host}:{settings.meilisearch_port}')
+        self._ensure_index_exists()
 
-create_index()
+    def _ensure_index_exists(self):
+        """
+        Ensure the 'products' index exists in MeiliSearch.
+        If the index does not exist, it creates one with 'id' as the primary key.
+        """
+        if 'products' not in [index for index in self.client.get_indexes()]:
+            self.client.create_index(uid='products', options={'primaryKey': 'id'})
+
+# Initialize the MeiliSearch client
+meili_client = MeiliSearchClient().client
+
