@@ -3,3 +3,8 @@ pillow
 qdrant-client
 transformers
 torch
+pytest
+httpx
+pytest-asyncio
+pydantic-settings
+git+https://github.com/openai/CLIP.git
