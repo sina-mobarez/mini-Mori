@@ -1,23 +1,21 @@
-from fastapi import FastAPI, UploadFile, File
-from core.schemas import TextInput, TextOutput, ImageOutput, ImageSearchResult
-from core.services.text_service import TextService
+from fastapi import FastAPI
+from core.schemas import TextInput, ImageSearchResult
 from core.services.image_service import ImageService
 
 app = FastAPI()
 
-text_service = TextService()
 image_service = ImageService()
-
-@app.post("/process-text", response_model=TextOutput)
-async def process_text(text_input: TextInput):
-    return await text_service.process_text(text_input.text)
-
-@app.post("/process-image", response_model=ImageOutput)
-async def process_image(file: UploadFile = File(...)):
-    image_data = await file.read()
-    return await image_service.process_image(image_data)
 
 @app.post("/search-images", response_model=list[ImageSearchResult])
 async def search_images(text_input: TextInput):
+    """
+    Endpoint to search for images similar to the given text input.
+
+    Args:
+        text_input (TextInput): The text input to search for similar images.
+
+    Returns:
+        list[ImageSearchResult]: A list of search results containing image IDs and similarity scores.
+    """
     results = await image_service.search_similar_images(text_input.text)
     return results
