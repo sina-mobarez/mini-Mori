@@ -44,3 +44,33 @@ it will return a list of images that match the query. like this:
     }
     // More results...
 ]
+
+# test 
+
+for test run:
+
+pytest /tests
+
+
+## front 
+
+for frontend we use vue.js 
+
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
