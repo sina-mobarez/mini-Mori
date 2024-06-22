@@ -74,3 +74,14 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+# keyword search 
+
+for this purpose we use meilisearch
+for run it by docker use this command:
+
+
+for load json (products.json) use this command:
+
+python scripts/load_products_to_meilisearch.py path_to_your/products.json

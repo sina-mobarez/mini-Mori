@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     """
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
+    meilisearch_host: str = "localhost"
+    meilisearch_port: int = 7700
 
     class Config:
         """

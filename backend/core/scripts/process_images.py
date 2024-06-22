@@ -1,7 +1,7 @@
 import json
 import asyncio
-from utils import clip_model_wrapper, fetch_image
-from repositories.image_repository import ImageRepository
+from core.utils import clip_model_wrapper, fetch_image
+from core.repositories.image_repository import ImageRepository
 from qdrant_client.http.models import PointStruct
 import aiohttp
 
