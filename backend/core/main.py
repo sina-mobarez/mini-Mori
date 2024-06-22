@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
-from core.schemas import TextInput, TextOutput, ImageOutput
+from core.schemas import TextInput, TextOutput, ImageOutput, ImageSearchResult
 from core.services.text_service import TextService
 from core.services.image_service import ImageService
 
@@ -16,3 +16,8 @@ async def process_text(text_input: TextInput):
 async def process_image(file: UploadFile = File(...)):
     image_data = await file.read()
     return await image_service.process_image(image_data)
+
+@app.post("/search-images", response_model=list[ImageSearchResult])
+async def search_images(text_input: TextInput):
+    results = await image_service.search_similar_images(text_input.text)
+    return results

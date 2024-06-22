@@ -1,8 +1,8 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    qdrant_host: str
-    qdrant_port: int 
+    qdrant_host: str = "localhost"
+    qdrant_port: int = 6333
 
     class Config:
         env_file = ".env"

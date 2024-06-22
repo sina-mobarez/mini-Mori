@@ -1,25 +1,30 @@
-from PIL import Image
-import io
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import PointStruct
-from core.config import settings
-from core.utils import generate_image_embedding
+from config import settings
 
 class ImageRepository:
     def __init__(self):
         self.client = QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
         self.collection_name = "images"
-        self.client.create_collection(
-            collection_name=self.collection_name,
-            vectors_config={"size": 512, "distance": "Cosine"}
-        )
+        self._ensure_collection_exists()
 
-    async def process_image(self, image_data: bytes) -> str:
-        image = Image.open(io.BytesIO(image_data))
-        # Generate image embedding
-        embedding = generate_image_embedding(image)
-        point = PointStruct(id=1, vector=embedding, payload={"size": image.size})
-        self.client.upsert(collection_name=self.collection_name, points=[point])
-        width, height = image.size
-        return f"Image size: {width}x{height}"
+    def _ensure_collection_exists(self):
+        collections = self.client.get_collections().collections
+        collection_names = [collection.name for collection in collections]
+
+        if self.collection_name not in collection_names:
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config={"size": 512, "distance": "Cosine"}
+            )
+
+    async def upsert_images(self, points):
+        self.client.upsert(collection_name=self.collection_name, points=points)
+
+    async def search_similar_images(self, embedding, limit=5):
+        results = self.client.search(
+            collection_name=self.collection_name,
+            query_vector=embedding,
+            limit=limit,
+        )
+        return results
 

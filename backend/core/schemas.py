@@ -8,3 +8,7 @@ class TextOutput(BaseModel):
 
 class ImageOutput(BaseModel):
     result: str
+
+class ImageSearchResult(BaseModel):
+    id: str
+    score: float

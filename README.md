@@ -20,3 +20,27 @@ for run it must install fastapi and other dependency and :
 fastapi dev main.py ----- for develop env
 and 
 fastapi run ---- for production 
+
+
+we have json file that contain a lot of many info of products,
+we can use this command to fetch it and store in db:
+
+python app/process_images.py products.json batch-size
+
+make sure your db is UP.
+
+when u send a text query to this end point:  "/search-images"
+
+it will return a list of images that match the query. like this:
+
+[
+    {
+        "id": "2073427",
+        "score": 0.95
+    },
+    {
+        "id": "2073427",
+        "score": 0.92
+    }
+    // More results...
+]
