@@ -1,47 +1,73 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script>
+import Sidebar from "./components/Sidebar.vue";
+
+export default {
+  components: {
+    Sidebar
+  },
+  data() {
+    return {
+      searchQuery: ''
+    };
+  },
+  methods: {
+    handleSearchUpdate(searchTerm) {
+      this.searchQuery = searchTerm;
+      console.log('Search term:', this.searchQuery); // For debugging purposes
+      // You can also add any additional logic to handle the search term update here
+    }
+  }
+};
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <sidebar>
+    <div class="section section-30">
+      <Sidebar @search-updated="handleSearchUpdate" />
     </div>
-  </header>
+  </sidebar>
 
   <main>
-    <TheWelcome />
+    <div class="section section-70">
+      <div class="content">
+      <!-- Your main content goes here -->
+      <p>Search Query: {{ searchQuery }}</p>
+    </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.container {
+  display: flex;
+  width: 80%;
+  height: 60vh;
+  border: 1px solid #ccc;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.section {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.section-30 {
+  flex: 0 0 30%;
+  background-color: #cff6d8;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.section-70 {
+  flex: 0 0 70%;
+  background-color: #cce5ff;
 }
 </style>
