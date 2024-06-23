@@ -1,73 +1,90 @@
-<script>
-import Sidebar from "./components/Sidebar.vue";
+<script setup>
+import { ref } from "vue";
+import nlp from 'compromise';
 
-export default {
-  components: {
-    Sidebar
-  },
-  data() {
-    return {
-      searchQuery: ''
-    };
-  },
-  methods: {
-    handleSearchUpdate(searchTerm) {
-      this.searchQuery = searchTerm;
-      console.log('Search term:', this.searchQuery); // For debugging purposes
-      // You can also add any additional logic to handle the search term update here
-    }
+
+let searchValue = ref("");
+let isActiveKeywordSearch = ref(false);
+
+let keywords = []
+
+const getSearchValue = () => {
+  if (isActiveKeywordSearch.value === true) {
+    keywords = extractKeywords(searchValue.value);
   }
+
 };
+
+function extractKeywords(sentence) {
+  const doc = nlp(sentence);
+
+  // Extract nouns and verbs as keywords
+  const keywords = doc
+    .nouns()
+    .out('array')
+    .concat(doc.verbs().out('array'));
+
+  return keywords;
+}
+
 </script>
 
 <template>
-  <sidebar>
-    <div class="section section-30">
-      <Sidebar @search-updated="handleSearchUpdate" />
-    </div>
-  </sidebar>
+  <div class="container">
+    <br />
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <form @submit.prevent="getSearchValue" class="card card-sm">
+          <div class="card-body row no-gutters align-items-center">
+            <div class="col-auto">
+              <i class="fas fa-search h4 text-body"></i>
+            </div>
+            <!--end of col-->
+            <div class="col">
+              <input
+                class="form-control form-control-lg form-control-borderless"
+                type="search"
+                placeholder="What are you looking for ?"
+                v-model="searchValue"
+              />
+            </div>
+            <!--end of col-->
+            <div class="col-auto">
+              <button class="btn btn-lg btn-success" type="submit">
+                Search
+              </button>
+            </div>
+            <!--end of col-->
+            <div class="col-auto form-check">
+              <input
+                type="checkbox"
+                class="btn-check"
+                id="btn-check-5"
+                autocomplete="off"
+                v-model="isActiveKeywordSearch"
+              />
+              <label class="btn" for="btn-check-5">KeywordSearch</label>
+            </div>
 
-  <main>
-    <div class="section section-70">
-      <div class="content">
-      <!-- Your main content goes here -->
-      <p>Search Query: {{ searchQuery }}</p>
+            <!--end of col-->
+          </div>
+        </form>
+      </div>
+      <!--end of col-->
     </div>
-    </div>
-  </main>
+  </div>
 </template>
 
 <style scoped>
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
+.form-control-borderless {
+  border: none;
 }
 
-.container {
-  display: flex;
-  width: 80%;
-  height: 60vh;
-  border: 1px solid #ccc;
-}
-
-.section {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.section-30 {
-  flex: 0 0 30%;
-  background-color: #cff6d8;
-}
-
-.section-70 {
-  flex: 0 0 70%;
-  background-color: #cce5ff;
+.form-control-borderless:hover,
+.form-control-borderless:active,
+.form-control-borderless:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 </style>

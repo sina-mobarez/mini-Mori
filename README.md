@@ -99,3 +99,7 @@ if you have import error for run scripts use this way:
 export PYTHONPATH=$(pwd) (where products.json exist)
 
 and then run scripts
+
+
+# for use keyword search in frontend i use compromise pkg, this is a lightweight nlp lib for js
+
