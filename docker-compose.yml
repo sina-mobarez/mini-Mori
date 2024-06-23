@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - qdrant
+      - meilisearch
+    environment:
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - MEILISEARCH_HOST=meilisearch
+      - MEILISEARCH_PORT=7700
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  meilisearch:
+    image: getmeili/meilisearch
+    container_name: meilisearch
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data.ms
+
+volumes:
+  qdrant_storage:
+  meili_data:
