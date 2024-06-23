@@ -1,32 +1,62 @@
 <script setup>
 import { ref } from "vue";
-import nlp from 'compromise';
-
+import nlp from "compromise";
+import axiosInstance from "./utils/axiosInstance";
 
 let searchValue = ref("");
 let isActiveKeywordSearch = ref(false);
 
-let keywords = []
+let keywords = [];
+let querySearchData = [];
 
-const getSearchValue = () => {
+const querySearchUrl = "/search-images";
+const keywordSearchUrl = "/search-products";
+
+let querySearchPayload = {
+  text: searchValue.value,
+};
+
+let keywordSearchPayload = {
+  query: "string",
+  limit: 10,
+  offset: 0,
+  filter: [],
+  sort: []
+};
+
+const fetchSearchValue = () => {
   if (isActiveKeywordSearch.value === true) {
     keywords = extractKeywords(searchValue.value);
   }
 
+  fetchData(querySearchUrl, querySearchPayload).then((data) => {
+    if (data) {
+      querySearchData = data;
+    } else {
+      console.log("Failed to fetch data.");
+    }
+  });
 };
 
 function extractKeywords(sentence) {
   const doc = nlp(sentence);
 
   // Extract nouns and verbs as keywords
-  const keywords = doc
-    .nouns()
-    .out('array')
-    .concat(doc.verbs().out('array'));
+  const keywords = doc.nouns().out("array").concat(doc.verbs().out("array"));
 
   return keywords;
 }
 
+async function fetchData(url, payload) {
+  try {
+    const response = await axiosInstance.post(url, payload);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error posting data:", error);
+    return null;
+  }
+}
 </script>
 
 <template>
@@ -34,7 +64,7 @@ function extractKeywords(sentence) {
     <br />
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-8">
-        <form @submit.prevent="getSearchValue" class="card card-sm">
+        <form @submit.prevent="fetchSearchValue" class="card card-sm">
           <div class="card-body row no-gutters align-items-center">
             <div class="col-auto">
               <i class="fas fa-search h4 text-body"></i>

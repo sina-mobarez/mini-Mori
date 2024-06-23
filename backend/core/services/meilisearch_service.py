@@ -1,5 +1,6 @@
 from core.meilisearch_client import meili_client
 
+
 class MeiliSearchService:
     """
     Service class for interacting with the MeiliSearch client.
@@ -31,4 +32,24 @@ class MeiliSearchService:
             'filter': filter,
             'sort': sort
         }
+        return self.index.search(query, search_params)
+
+    def search_products_by_ids(self, product_ids: list):
+        results = []
+        for product_id in product_ids:
+            result = self.index.get_document(product_id)
+            if result:
+                results.append(dict(result))
+        return results
+
+    async def search_products_by_keywords(self, keywords: list, limit: int = 20, offset: int = 0):
+        # Construct the query by joining keywords with space
+        query = " ".join(keywords)
+        
+        search_params = {
+            'filter': ['name IS NOT NULL', 'description IS NOT NULL', 'category_name IS NOT NULL', 'brand_name IS NOT NULL'],
+            'limit': limit,
+            'offset': offset,
+        }
+
         return self.index.search(query, search_params)
