@@ -1,105 +1,139 @@
-# mini-Mori
-powefull and simple search engine through images using nlp and clip(openai) 
+# Mini Mori
 
+Simple and Powerful image engine search, that know NLP and use Vector search for find similar results.
 
-# vector db
+## Demo
 
-in this project we use vector db to store images and text and then use nlp to search images and text
-we use qdrant as vector db
-for run locally use docker image 
+![pipeline_recording](demo.gif)
 
-docker pull qdrant/qdrant
-docker run -p 6333:6333 qdrant/qdrant
+## Features
 
-# backend 
+- vector search
+- keyword search
+- dockerized
+- user-friendly interface
 
-for backend we use fastapi to implement some endpoint that accept text and return result 
+## BackEnd
 
-for run it must install fastapi and other dependency and :
+In backend use Fastapi framework, meilisearch, qdrant, pytest
 
-fastapi dev main.py ----- for develop env
-and 
-fastapi run ---- for production 
+first set DataBase and virtualenv
 
+Set Qdrant database:
 
-we have json file that contain a lot of many info of products,
-we can use this command to fetch it and store in db:
-
-python app/process_images.py products.json batch-size
-
-make sure your db is UP.
-
-when u send a text query to this end point:  "/search-images"
-
-it will return a list of images that match the query. like this:
-
-[
-    {
-        "id": "2073427",
-        "score": 0.95
-    },
-    {
-        "id": "2073427",
-        "score": 0.92
-    }
-    // More results...
-]
-
-# test 
-
-for test run:
-
-pytest /tests
-
-
-## front 
-
-for frontend we use vue.js 
-
-
-## Project Setup
-
-```sh
-npm install
+```bash
+docker pull qdrant/qdrant docker run -p 6333:6333 qdrant/qdrant
 ```
 
-### Compile and Hot-Reload for Development
+Set Meilisearch:
 
-```sh
-npm run dev
+```bash
+docker run -d --rm
+--name meili-search
+-p 7700:7700
+-e MEILI_ENV='development'
+-v $(pwd)/meili_data:/meili_data
+getmeili/meilisearch
 ```
 
-### Compile and Minify for Production
+Now Set virtualenv:
 
-```sh
-npm run build
+```bash
+python -m venv venv_name
 ```
 
+active it in Linux:
 
-# keyword search 
+```bash
+source venv_name/bin/activate
+```
 
-for this purpose we use meilisearch
-for run it by docker use this command:
+## Run Locally
 
-docker pull getmeili/meilisearch
+Clone the project
 
-docker run -d --rm \
-    --name meili-search \
-    -p 7700:7700 \
-    -e MEILI_ENV='development' \
-    -v $(pwd)/meili_data:/meili_data \
-    getmeili/meilisearch
+```bash
+  git clone https://github.com/sina-mobarez/mini-Mori.git
+```
 
-for load json (products.json) use this command:
+Go to the project directory
 
-python scripts/load_products_to_meilisearch.py path_to_your/products.json
+```bash
+  cd mini-Mori
+```
 
+Install dependencies
 
-if you have import error for run scripts use this way:
-export PYTHONPATH=$(pwd) (where products.json exist)
+```bash
+  cd backend
+  pip install requirements.txt
+```
 
-and then run scripts
+Fill Qdrant Database
+(exist a json file that contain 10000 products information by this command process images of products and store in vectordb):
 
+```bash
+  python scripts/process_images.py products.json batch-size
+```
 
-# for use keyword search in frontend i use compromise pkg, this is a lightweight nlp lib for js
+Fill Meilisearch Database [exist a json file that contain 10000 products information by this command indexing all products in database]:
 
+```bash
+  python scripts/load_products_to_meilisearch.py products.json
+```
+
+Start the server
+
+```bash
+  fastapi run
+```
+
+- Now you can use swagger or postman to call apis
+
+## FrontEnd
+
+User interface use Vue.js for run it:
+
+```bash
+  cd ../frontend
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run dev
+```
+
+- [just for production] Compile and Minify for Production
+
+```bash
+  npm run build
+```
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  pytest /tests
+```
+
+make sure you are in /backend.
+
+## Contributing
+
+Contributions are always welcome!
+
+## Feedback
+
+If you have any feedback, please reach out to us at mubarriizz@gmail.com
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
