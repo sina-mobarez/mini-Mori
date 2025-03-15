@@ -3,7 +3,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from core.schemas import ProductSearchResponse, SearchQuery, TextInput, ImageSearchResult
 from core.services.image_service import ImageService
-from core.services.meilisearch_service import MeiliSearchService
+from core.services.product_service import ProductService
 
 app = FastAPI()
 
@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 image_service = ImageService()
-meili_search_service = MeiliSearchService()
+product_service = ProductService()
 
 @app.post("/search-images", response_model=list[ImageSearchResult])
 async def search_images(text_input: TextInput):
@@ -46,7 +46,7 @@ async def search_products(search_query: SearchQuery):
     Returns:
         ProductSearchResponse: A response containing the search results.
     """
-    results = await meili_search_service.search_products(
+    results = await product_service.search_products(
         query=search_query.query,
         limit=search_query.limit,
         offset=search_query.offset,
@@ -67,7 +67,7 @@ async def search_products_by_ids(ids: List[int] = Query(...)):
     Returns:
         ProductSearchResponse: A list of products matching the provided IDs.
     """
-    results = meili_search_service.search_products_by_ids(ids)
+    results = product_service.search_products_by_ids(ids)
     return results
 
 
@@ -82,5 +82,5 @@ async def search_products_by_keywords(keywords: list = Query(...)):
     Returns:
         ProductSearchResponse: A list of products matching the provided keywords.
     """
-    results = await meili_search_service.search_products_by_keywords(keywords)
+    results = await product_service.search_products_by_keywords(keywords)
     return results
