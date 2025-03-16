@@ -62,8 +62,21 @@ async def fetch_image(session: aiohttp.ClientSession, url: str) -> Image.Image:
     Returns:
         Image.Image: The fetched PIL Image if successful, None otherwise.
     """
-    async with session.get(url) as response:
-        if response.status == 200:
-            image_data = await response.read()
-            return Image.open(io.BytesIO(image_data))
+    try:
+        async with session.get(url, timeout=30) as response:
+            if response.status == 200:
+                try:
+                    image_data = await response.read()
+                    return Image.open(io.BytesIO(image_data))
+                except (IOError, OSError) as e:
+                    print(f'Error processing image from {url} : {str(e)}')
+                return None
+            else:
+                print(f"Failed to fetch image from {url}. Status: {response.status}")
+                return None
+    except (aiohttp.ClientError, aiohttp.ServerTimeoutError) as e:
+        print(f"Network error while fetching {url}: {str(e)}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error while fetching {url}: {str(e)}")
         return None

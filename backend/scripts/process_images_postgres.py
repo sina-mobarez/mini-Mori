@@ -1,7 +1,13 @@
 import json
+from pathlib import Path
+import sys
 import asyncio
 import aiohttp
 import psycopg2 as psycopg
+
+backend_dir = Path(__file__).parent.parent
+sys.path.append(str(backend_dir))
+
 from core.utils import clip_model_wrapper, fetch_image
 from core.config import settings
 
